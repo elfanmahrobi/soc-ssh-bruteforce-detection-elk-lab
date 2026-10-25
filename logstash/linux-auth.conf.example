@@ -1,0 +1,46 @@
+input {
+  beats {
+    port => 5044
+  }
+}
+
+filter {
+  if [log_source] == "ubuntu-auth" {
+    grok {
+      match => {
+        "message" => [
+          "%{SYSLOGTIMESTAMP:syslog_timestamp} %{HOSTNAME:observer_hostname} %{DATA:process.name}(?:\[%{POSINT:process.pid}\])?: Failed password for (?:invalid user )?%{USERNAME:user.name} from %{IP:source.ip} port %{POSINT:source.port} ssh2",
+          "%{SYSLOGTIMESTAMP:syslog_timestamp} %{HOSTNAME:observer_hostname} %{DATA:process.name}(?:\[%{POSINT:process.pid}\])?: Accepted %{WORD:ssh.auth_method} for %{USERNAME:user.name} from %{IP:source.ip} port %{POSINT:source.port} ssh2"
+        ]
+      }
+    }
+
+    if "Failed password" in [message] {
+      mutate {
+        add_field => {
+          "[event][category]" => "authentication"
+          "[event][outcome]" => "failure"
+          "[event][action]" => "ssh-login-failed"
+        }
+      }
+    } else if "Accepted" in [message] {
+      mutate {
+        add_field => {
+          "[event][category]" => "authentication"
+          "[event][outcome]" => "success"
+          "[event][action]" => "ssh-login-success"
+        }
+      }
+    }
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["https://127.0.0.1:9200"]
+    index => "linux-auth-%{+YYYY.MM.dd}"
+    user => "${ELASTIC_USER}"
+    password => "${ELASTIC_PASSWORD}"
+    ssl_certificate_authorities => ["/etc/logstash/certs/http_ca.crt"]
+  }
+}
