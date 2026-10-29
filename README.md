@@ -402,8 +402,6 @@ At the end of this lab, the analyst should be able to:
 
 ## Project Status
 
-## Project Status
-
 - [x] VirtualBox SOC lab environment configured
 - [x] Elasticsearch, Logstash, and Kibana services validated
 - [x] System clocks synchronized using NTP
