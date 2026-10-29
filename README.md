@@ -402,17 +402,29 @@ At the end of this lab, the analyst should be able to:
 
 ## Project Status
 
-- [x] Lab topology documented
-- [x] Filebeat and Logstash examples added
-- [x] Detection logic documented
-- [x] Investigation workflow documented
-- [x] Containment and recovery procedure documented
-- [x] Incident report template added
-- [ ] Replace placeholders with actual screenshots
-- [ ] Record the actual Kibana data view and field names
-- [ ] Export and add the validated Kibana detection rule
-- [ ] Complete the incident report with real lab timestamps
+## Project Status
 
+- [x] VirtualBox SOC lab environment configured
+- [x] Elasticsearch, Logstash, and Kibana services validated
+- [x] System clocks synchronized using NTP
+- [x] Logstash Beats input configured on TCP port 5044
+- [x] Filebeat configuration and output connectivity validated
+- [x] Linux authentication logs successfully collected and indexed
+- [x] Successful SSH authentication baseline recorded
+- [x] Controlled failed SSH authentication activity generated
+- [x] Authentication events investigated in Kibana Discover
+- [x] SSH brute-force detection rule created and enabled
+- [x] Security alert successfully generated
+- [x] Elastic email connector configured
+- [x] Automated email alert successfully received
+- [x] SOC alert triage and investigation completed
+- [x] Temporary UFW source-IP containment applied
+- [x] SSH containment successfully verified
+- [x] Temporary firewall rule removed
+- [x] SSH connectivity successfully restored
+- [x] Incident report and project evidence completed
+- [x] Sensitive information reviewed and sanitized
+- [x] Project completed
 ---
 
 ## Disclaimer
