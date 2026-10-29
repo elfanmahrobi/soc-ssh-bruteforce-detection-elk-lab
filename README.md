@@ -261,21 +261,125 @@ message:"Failed password" and source.ip:"192.168.56.122"
 
 ---
 
-## Suggested Evidence
+## Project Evidence
 
-Add sanitized screenshots to `screenshots/`:
+The following evidence documents the complete SOC workflow, from lab
+validation and centralized log collection to detection, notification,
+containment, and recovery.
 
-1. VirtualBox lab environment
-2. ELK services and listening ports
-3. Filebeat configuration and output validation
-4. Normal successful SSH baseline
-5. Controlled failed SSH events on Ubuntu
-6. Events visible in Kibana Discover
-7. Detection rule configuration
-8. Generated security alert
-9. UFW containment rule
-10. Failed connection after containment
-11. Recovery verification
+### 1. VirtualBox Lab Environment
+
+The lab consists of an ELK Server, a Kali Linux machine used for the
+authorized SSH authentication simulation, and an Ubuntu Server monitored
+by Filebeat.
+
+![VirtualBox Lab Environment](screenshots/01-virtualbox-lab.png)
+
+---
+
+### 2. ELK Stack Services
+
+Elasticsearch, Logstash, and Kibana were validated on the ELK Server.
+Logstash listens for incoming Filebeat events on TCP port 5044.
+
+![ELK Stack Services](screenshots/02-elk-services.png)
+
+---
+
+### 3. Filebeat Validation
+
+Filebeat was validated on the monitored Ubuntu Server. The configuration
+test and Logstash output connection completed successfully.
+
+![Filebeat Validation](screenshots/03-filebeat-validation.png)
+
+---
+
+### 4. Successful SSH Authentication Baseline
+
+A successful SSH authentication was performed before generating suspicious
+activity. This established a known-good baseline for comparison during the
+investigation.
+
+![Successful SSH Baseline](screenshots/04-successful-ssh-baseline.png)
+
+---
+
+### 5. Failed SSH Authentication Events
+
+Repeated failed SSH authentication attempts were generated from the
+authorized Kali Linux machine against the monitored Ubuntu Server inside
+the isolated VirtualBox network.
+
+![Failed SSH Authentication Events](screenshots/05-failed-ssh-events.png)
+
+---
+
+### 6. Kibana Discover Investigation
+
+The failed SSH authentication events were analyzed in Kibana Discover.
+The investigation confirmed the event timestamps, monitored host, source
+address, targeted account, and authentication outcome.
+
+![Kibana Discover Investigation](screenshots/06-kibana-discover.png)
+
+---
+
+### 7. SSH Brute-Force Detection Rule
+
+A detection rule was configured to identify multiple failed SSH
+authentication attempts within the defined detection window.
+
+![SSH Brute-Force Detection Rule](screenshots/07-detection-rule.png)
+
+---
+
+### 8. Security Alert Generated
+
+The detection rule successfully generated a security alert after the
+configured conditions were met.
+
+![SSH Brute-Force Security Alert](screenshots/08-security-alert.png)
+
+---
+
+### 9. Email Alert Notification
+
+An email connector delivered an automated notification containing the
+rule information, monitored agent, source address, alert level, and
+detection message.
+
+![Email Alert Notification](screenshots/09-email-notification.png)
+
+---
+
+### 10. UFW Containment
+
+A temporary UFW rule was implemented on the monitored Ubuntu Server to
+block SSH connections from the identified source address while preserving
+the SSH service for other permitted sources.
+
+![UFW Containment](screenshots/10-ufw-containment.png)
+
+---
+
+### 11. Containment Verification
+
+SSH connectivity from the contained source was tested after the UFW rule
+was applied. The connection was blocked while the SSH service remained
+active on the monitored server.
+
+![Containment Verification](screenshots/11-containment-verification.png)
+
+---
+
+### 12. Recovery Verification
+
+The temporary UFW deny rule was removed after validation. SSH connectivity
+was successfully restored, confirming that the monitored server returned
+to its normal operating state.
+
+![Recovery Verification](screenshots/12-recovery-verification.png)
 
 See [`screenshots/README.md`](screenshots/README.md) for filenames and guidance.
 
